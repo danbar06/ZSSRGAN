@@ -6,7 +6,6 @@ import numpy as np
 import torch
 import tqdm
 
-
 class ZSSR:
     # Basic current state variables initialization / declaration
     kernel = None
