@@ -111,6 +111,9 @@ class ZSSR:
         # Optimizers
         self.optimizer = torch.optim.Adam(self.network.parameters(), lr=self.learning_rate, betas=(0.9, 0.999))
 
+        #keep track of number of epchos for ZSSR
+        self.epcho_num_Z = 0
+
     def set_kernels(self, kernels):
         if kernels is not None:
             self.kernels = [kernel_shift(kernel, sf) for kernel, sf in zip(kernels, self.conf.scale_factors)]
@@ -370,3 +373,84 @@ class ZSSR:
                 self.base_ind += 1
 
             print('base changed to %.2f' % self.base_sf)
+
+    def epoch_Z(self,hr_fathers_sources, loss_map_sources, kernels=None):
+        # Increment epcho number of ZSSR
+        self.epcho_num_Z +=1
+        # Use augmentation from original input image to create current father.
+        # If other scale factors were applied before, their result is also used (hr_fathers_in)
+        # crop_center = choose_center_of_crop(self.prob_map) if self.conf.choose_varying_crop else None
+        crop_center = None
+
+        self.hr_father, self.cropped_loss_map = \
+            random_augment(ims=hr_fathers_sources,
+                           base_scales=[1.0] + self.conf.scale_factors,
+                           leave_as_is_probability=self.conf.augment_leave_as_is_probability,
+                           no_interpolate_probability=self.conf.augment_no_interpolate_probability,
+                           min_scale=self.conf.augment_min_scale,
+                           max_scale=([1.0] + self.conf.scale_factors)[len(hr_fathers_sources) - 1],
+                           allow_rotation=self.conf.augment_allow_rotation,
+                           scale_diff_sigma=self.conf.augment_scale_diff_sigma,
+                           shear_sigma=self.conf.augment_shear_sigma,
+                           crop_size=self.conf.crop_size,
+                           allow_scale_in_no_interp=self.conf.allow_scale_in_no_interp,
+                           crop_center=crop_center,
+                           loss_map_sources=loss_map_sources)
+        # set the kernel of the for father_to_son
+        if kernels:
+            self.set_kernels(kernels)
+        # Get lr-son from hr-father
+        self.lr_son = self.father_to_son(self.hr_father)
+        # run network forward and back propagation, one iteration (This is the heart of the training)
+        # Zeroize gradients
+        self.optimizer.zero_grad()
+        # ZSSR forward pass
+        pred = self.network.forward(self.lr_son, self.sf)
+        # Convert target to torch
+        hr_father = torch.tensor(self.hr_father).float().to(self.device)
+        cropped_loss_map = torch.tensor(self.cropped_loss_map, requires_grad=False).float().to(self.device)
+        # Channels to first dim
+        hr_father = torch.permute(hr_father, dims=(2, 0, 1))
+        cropped_loss_map = torch.permute(cropped_loss_map, dims=(2, 0, 1))
+        # Add batch dimension
+        hr_father = torch.unsqueeze(hr_father, dim=0)
+        cropped_loss_map = torch.unsqueeze(cropped_loss_map, dim=0)
+        if self.conf.disc_loss:
+            # Pass ZSSR output through Discriminator
+            d_pred_fake = self.D.forward(pred)
+            # Final loss (Weighted (cropped_loss_map) L1 loss between label and output layer) + Discriminator loss
+            loss = self.criterion(pred, hr_father, cropped_loss_map) + self.DiscLoss(d_last_layer=d_pred_fake,
+                                                                                     is_d_input_real=True,
+                                                                                     zssr_shape=True)
+        else:
+            # Final loss (Weighted (cropped_loss_map) L1 loss between label and output layer)
+            loss = self.criterion(pred, hr_father, cropped_loss_map)
+        # Initiate backprop
+        loss.backward()
+        self.optimizer.step()
+
+        """
+        # Reduce batch dim
+        output_img = torch.squeeze(pred)
+        # channels to last dim
+        output_img = torch.permute(output_img, dims=(1, 2, 0))
+        # Clip output between 0,1
+        output_img = torch.clamp(output_img, min=0, max=1)
+        # Convert torch to numpy
+        output_img = output_img.detach().numpy()
+        # need to check why this output is needed
+        self.train_output = output_img
+        """
+
+        # Test network
+        if self.conf.run_test and (not self.epcho_num_Z % self.conf.run_test_every):
+            self.quick_test()
+
+        # Consider changing learning rate or stop according to iteration number and losses slope
+        if self.learning_rate_policy():
+            for param_group in self.optimizer.param_groups:
+                param_group['lr'] = self.learning_rate
+
+        # stop when minimum learning rate was passed
+        if self.learning_rate < self.conf.min_learning_rate:
+            break
