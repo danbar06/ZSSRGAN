@@ -5,6 +5,8 @@ import matplotlib.image as img
 from ZSSRforKernelGAN.zssr_configs import Config
 from ZSSRforKernelGAN.zssr_utils import *
 from ZSSRforKernelGAN.ZSSR_network import *
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 
 class ZSSR:
     # Basic current state variables initialization / declaration
@@ -116,6 +118,11 @@ class ZSSR:
 
         # set to true to stop ZSSR training early
         self.stop_early_Z = False
+
+        # keep track of losses for plotting
+        self.verbose = False  # Need to insert into conf file
+        self.values_DiscLoss_Z = []
+        self.values_L1Loss_Z = []
 
     def set_kernels(self, kernels):
         if kernels is not None:
@@ -418,16 +425,20 @@ class ZSSR:
         # Add batch dimension
         hr_father = torch.unsqueeze(hr_father, dim=0)
         cropped_loss_map = torch.unsqueeze(cropped_loss_map, dim=0)
+        # loss (Weighted (cropped_loss_map) L1 loss between label and output layer)
+        loss_L1 = self.criterion(pred, hr_father, cropped_loss_map)
         if self.conf.disc_loss:
             # Pass ZSSR output through Discriminator
             d_pred_fake = self.D.forward(pred)
             # Final loss (Weighted (cropped_loss_map) L1 loss between label and output layer) + Discriminator loss
-            loss = self.criterion(pred, hr_father, cropped_loss_map) + self.DiscLoss(d_last_layer=d_pred_fake,
+            loss_Disc =  self.DiscLoss(d_last_layer=d_pred_fake,
                                                                                      is_d_input_real=True,
                                                                                      zssr_shape=True)
         else:
             # Final loss (Weighted (cropped_loss_map) L1 loss between label and output layer)
-            loss = self.criterion(pred, hr_father, cropped_loss_map)
+            loss_Disc = 0
+        # Total loss
+        loss = loss_L1 +loss_Disc
         # Initiate backprop
         loss.backward()
         self.optimizer_Z.step()
@@ -457,3 +468,45 @@ class ZSSR:
         # stop when minimum learning rate was passed
         if self.learning_rate < self.conf.min_learning_rate:
             self.stop_early_Z = True
+
+        # track losses values for plotting
+        if self.verbose:
+            self.values_L1Loss_Z.append(loss_L1.item())
+            self.values_DiscLoss_Z.append(loss_Disc.item())
+
+    def plot_train_loss(self):
+        if not self.verbose:
+            return
+        plt.rc("font", size=16, family="Times New Roman")
+        fig = plt.figure(figsize=(10, 6))
+        # enabling a convert from Figure object numpy array
+        canvas = FigureCanvas(fig)
+        # config axes parameters
+        axs = fig.add_axes([0, 0, 1, 1])
+        axs.set_xlabel("Number of epchos", fontdict={"size": 20, "weight": "bold"})
+        axs.set_ylabel("losses", fontdict={"size": 20, "weight": "bold"})
+        # x axis is number of epochs
+        x = np.linspace(self.epcho_num_Z)
+        # plot L1 loss
+        axs.plot(x,
+                 self.values_L1Loss_Z,
+                 c='yellow',
+                 label=r'$Weighted L1 loss$')
+        # plot Discriminator on ZSSR output
+        if self.conf.disc_loss:
+            axs.plot(x,
+                     self.values_DiscLoss_Z,
+                     c='red',
+                     label=r'$Discriminator loss$')
+        # plot total loss
+        values_loss_total = np.array(self.values_L1Loss_Z) + np.array(self.values_DiscLoss_Z)
+        axs.plot(x,
+                 values_loss_total,
+                 c='blue',
+                 label=r'$Total loss$')
+
+        plt.legend()
+        # convert Figure to Numpy array
+        canvas.draw()
+        image = np.frombuffer(canvas.tostring_rgb(), dtype='uint8')
+        return image
