@@ -109,10 +109,13 @@ class ZSSR:
         self.loss_map_sources = [self.loss_map]
 
         # Optimizers
-        self.optimizer = torch.optim.Adam(self.network.parameters(), lr=self.learning_rate, betas=(0.9, 0.999))
+        self.optimizer_Z = torch.optim.Adam(self.network.parameters(), lr=self.learning_rate, betas=(0.9, 0.999))
 
-        #keep track of number of epchos for ZSSR
+        # keep track of number of epchos for ZSSR
         self.epcho_num_Z = 0
+
+        # set to true to stop ZSSR training early
+        self.stop_early_Z = False
 
     def set_kernels(self, kernels):
         if kernels is not None:
@@ -261,7 +264,7 @@ class ZSSR:
             self.lr_son = self.father_to_son(self.hr_father)
             # run network forward and back propagation, one iteration (This is the heart of the training)
             # Zeroize gradients
-            self.optimizer.zero_grad()
+            self.optimizer_Z.zero_grad()
             # ZSSR forward pass
             pred = self.network.forward(self.lr_son, self.sf)
             # Convert target to torch
@@ -282,7 +285,7 @@ class ZSSR:
                 loss = self.criterion(pred, hr_father, cropped_loss_map)
             # Initiate backprop
             loss.backward()
-            self.optimizer.step()
+            self.optimizer_Z.step()
 
             """
             # Reduce batch dim
@@ -303,7 +306,7 @@ class ZSSR:
 
             # Consider changing learning rate or stop according to iteration number and losses slope
             if self.learning_rate_policy():
-                for param_group in self.optimizer.param_groups:
+                for param_group in self.optimizer_Z.param_groups:
                     param_group['lr'] = self.learning_rate
 
             # stop when minimum learning rate was passed
@@ -374,7 +377,7 @@ class ZSSR:
 
             print('base changed to %.2f' % self.base_sf)
 
-    def epoch_Z(self,hr_fathers_sources, loss_map_sources, kernels=None):
+    def epoch_Z(self, kernels=None):
         # Increment epcho number of ZSSR
         self.epcho_num_Z +=1
         # Use augmentation from original input image to create current father.
@@ -382,33 +385,33 @@ class ZSSR:
         # crop_center = choose_center_of_crop(self.prob_map) if self.conf.choose_varying_crop else None
         crop_center = None
 
-        self.hr_father, self.cropped_loss_map = \
-            random_augment(ims=hr_fathers_sources,
+        hr_father, cropped_loss_map = \
+            random_augment(ims=self.hr_fathers_sources,
                            base_scales=[1.0] + self.conf.scale_factors,
                            leave_as_is_probability=self.conf.augment_leave_as_is_probability,
                            no_interpolate_probability=self.conf.augment_no_interpolate_probability,
                            min_scale=self.conf.augment_min_scale,
-                           max_scale=([1.0] + self.conf.scale_factors)[len(hr_fathers_sources) - 1],
+                           max_scale=([1.0] + self.conf.scale_factors)[len(self.hr_fathers_sources) - 1],
                            allow_rotation=self.conf.augment_allow_rotation,
                            scale_diff_sigma=self.conf.augment_scale_diff_sigma,
                            shear_sigma=self.conf.augment_shear_sigma,
                            crop_size=self.conf.crop_size,
                            allow_scale_in_no_interp=self.conf.allow_scale_in_no_interp,
                            crop_center=crop_center,
-                           loss_map_sources=loss_map_sources)
+                           loss_map_sources=self.loss_map_sources)
         # set the kernel of the for father_to_son
         if kernels:
             self.set_kernels(kernels)
         # Get lr-son from hr-father
-        self.lr_son = self.father_to_son(self.hr_father)
+        self.lr_son = self.father_to_son(hr_father)
         # run network forward and back propagation, one iteration (This is the heart of the training)
         # Zeroize gradients
-        self.optimizer.zero_grad()
+        self.optimizer_Z.zero_grad()
         # ZSSR forward pass
         pred = self.network.forward(self.lr_son, self.sf)
         # Convert target to torch
-        hr_father = torch.tensor(self.hr_father).float().to(self.device)
-        cropped_loss_map = torch.tensor(self.cropped_loss_map, requires_grad=False).float().to(self.device)
+        hr_father = torch.tensor(hr_father).float().to(self.device)
+        cropped_loss_map = torch.tensor(cropped_loss_map, requires_grad=False).float().to(self.device)
         # Channels to first dim
         hr_father = torch.permute(hr_father, dims=(2, 0, 1))
         cropped_loss_map = torch.permute(cropped_loss_map, dims=(2, 0, 1))
@@ -427,7 +430,7 @@ class ZSSR:
             loss = self.criterion(pred, hr_father, cropped_loss_map)
         # Initiate backprop
         loss.backward()
-        self.optimizer.step()
+        self.optimizer_Z.step()
 
         """
         # Reduce batch dim
@@ -448,9 +451,9 @@ class ZSSR:
 
         # Consider changing learning rate or stop according to iteration number and losses slope
         if self.learning_rate_policy():
-            for param_group in self.optimizer.param_groups:
+            for param_group in self.optimizer_Z.param_groups:
                 param_group['lr'] = self.learning_rate
 
         # stop when minimum learning rate was passed
         if self.learning_rate < self.conf.min_learning_rate:
-            break
+            self.stop_early_Z = True
