@@ -122,7 +122,7 @@ class ZSSR:
         self.optimizer_Z = torch.optim.Adam(self.network.parameters(), lr=self.learning_rate, betas=(0.9, 0.999))
 
         # keep track of number of epchos for ZSSR
-        self.epoch_num_Z = 0
+        self.epoch_num_Z = -1
 
         # set to true to stop ZSSR training early
         self.stop_early_Z = False
@@ -181,8 +181,8 @@ class ZSSR:
 
     def learning_rate_policy(self):
         # fit linear curve and check slope to determine whether to do nothing, reduce learning rate or finish
-        if (not (1 + self.iter) % self.conf.learning_rate_policy_check_every
-                and self.iter - self.learning_rate_change_iter_nums[-1] > self.conf.min_iters):
+        if (not (1 + self.epoch_num_Z) % self.conf.learning_rate_policy_check_every
+                and self.epoch_num_Z - self.learning_rate_change_iter_nums[-1] > self.conf.min_iters):
             # noinspection PyTupleAssignmentBalance
             [slope, _], [[var, _], _] = np.polyfit(self.mse_steps[-int(self.conf.learning_rate_slope_range /
                                                                        self.conf.run_test_every):],
@@ -228,7 +228,7 @@ class ZSSR:
         self.interp_rec_mse.append(np.mean(np.ndarray.flatten(np.square(self.input - interp_rec))))
 
         # Track the iters in which tests are made for the graphics x axis
-        self.mse_steps.append(self.iter)
+        self.mse_steps.append(self.epoch_num_Z)
 
     def train(self):
         # main training loop
@@ -333,7 +333,7 @@ class ZSSR:
             loss_Disc = self.DiscLoss(d_last_layer=d_pred_fake,
                                       is_d_input_real=True,
                                       zssr_shape=True)
-            self.writer.add_scalar("DiskLoss/train", loss_Disc, self.iter)
+            self.writer.add_scalar("DiskLoss/train", loss_Disc, self.epoch_num_Z)
         else:
             # Final loss (Weighted (cropped_loss_map) L1 loss between label and output layer)
             loss_Disc = 0
