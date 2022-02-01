@@ -125,11 +125,11 @@ class ZSSR:
         self.values_DiscLoss_Z = []
         self.values_L1Loss_Z = []
 
-    def set_kernels(self, kernels):
+    def set_kernels(self, kernel):
         if kernels is not None:
-            self.kernels = [kernel_shift(kernel, sf) for kernel, sf in zip(kernels, self.conf.scale_factors)]
+            self.kernel = kernel_shift(kernel, self.conf.scale_factor)
         else:
-            self.kernels = [self.conf.downscale_method] * len(self.conf.scale_factors)
+            self.kernel = self.conf.downscale_method
 
     def set_disc_loss(self, D, DiscLoss):
         self.D = D
@@ -162,10 +162,6 @@ class ZSSR:
                 self.loss_map_sources.append(create_loss_map(im=post_processed_output))
             else:
                 self.loss_map_sources.append(np.ones_like(post_processed_output))
-
-            # In some cases, the current output becomes the new input. If indicated and if this is the right scale to
-            # become the new base input. all of these conditions are checked inside the function.
-            self.base_change()
 
         # Return the final post processed output.
         # noinspection PyUnboundLocalVariable
@@ -296,25 +292,6 @@ class ZSSR:
 
         # Add colors to result image in case net was activated only on grayscale
         return self.final_sr
-
-    def base_change(self):
-        # If there is no base scale large than the current one get out of here
-        if len(self.conf.base_change_sfs) < self.base_ind + 1:
-            return
-
-        # Change base input image if required (this means current output becomes the new input)
-        if abs(self.conf.scale_factors[self.sf_ind] - self.conf.base_change_sfs[self.base_ind]) < 0.001:
-            if len(self.conf.base_change_sfs) > self.base_ind:
-                # The new input is the current output
-                self.input = self.final_sr
-
-                # The new base scale_factor
-                self.base_sf = self.conf.base_change_sfs[self.base_ind]
-
-                # Keeping track- this is the index inside the base scales list (provided in the config)
-                self.base_ind += 1
-
-            print('base changed to %.2f' % self.base_sf)
 
     def epoch_Z(self, kernels=None):
         # Increment epcho number of ZSSR
