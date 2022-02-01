@@ -75,14 +75,8 @@ class ZSSR:
         # Acquire meta parameters configuration from configuration class as a class variable
         self.conf = Config(scale_factor, is_real_img, noise_scale, disc_loss)
         # Read input image
-        self.input = img.imread(input_img_path)
-        # Discard the alpha channel from images
-        if self.input.shape[-1] == 4:
-            self.input = img.imread(input_img_path)[:, :, :3]
-        # For gray-scale images - add a 3rd dimension to fit the network
-        elif len(self.input.shape) == 2:
-            self.input = np.expand_dims(self.input, -1)
-        self.input = self.input / 255. if self.input.dtype == 'uint8' else self.input
+        # The first hr father source is the input (source goes through augmentation to become a father)
+        self.input = read_im(input_img_path)
         self.gt = None
 
         # backward support, probably should be deprecated later
@@ -91,6 +85,13 @@ class ZSSR:
         # set output shape
         self.output_shape = np.uint(np.ceil(np.array(self.input.shape[0:2]) * self.sf))
 
+        # set initial learning rate
+        self.learning_rate = self.conf.learning_rate
+
+        # Initialize all counters etc
+        self.mse, self.mse_rec, self.interp_mse, self.interp_rec_mse, self.mse_steps = [], [], [], [], []
+        self.learning_rate_change_iter_nums = [0]
+
         # Shift kernel to avoid misalignment
         self.kernel = None
         self.set_kernel(kernel)
@@ -98,25 +99,18 @@ class ZSSR:
         # Check if cuda is available
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         # Build network computational graph
-        # self.build_network(self.conf) NOT ALL IS IMPLEMENTED YET
         self.network = ZSSRNetwork(self.conf).to(self.device)
 
-        # Initialize network weights and meta parameters
+        # Initialize network weights
         self.weights_initiator = WeightsInitZSSR(self.conf)
-        self.init_sess(init_weights=True)
-
-        # The first hr father source is the input (source goes through augmentation to become a father)
-        # Later on, if we use gradual sr increments, results for intermediate scales will be added as sources.
-        self.hr_fathers_sources = [self.input]
+        self.network.apply(self.weights_initiator)
 
         # Create a loss map reflecting the weights per pixel of the image
+        # loss maps that correspond to the father sources array
         self.loss_map = create_loss_map(im=self.input) if self.conf.grad_based_loss_map else np.ones_like(self.input)
 
         # define loss function
         self.criterion = WeightedL1Loss()
-
-        # loss maps that correspond to the father sources array
-        self.loss_map_sources = [self.loss_map]
 
         # Optimizers
         self.optimizer_Z = torch.optim.Adam(self.network.parameters(), lr=self.learning_rate, betas=(0.9, 0.999))
@@ -127,10 +121,6 @@ class ZSSR:
         # set to true to stop ZSSR training early
         self.stop_early_Z = False
 
-        # keep track of losses for plotting
-        self.verbose = False  # Need to insert into conf file
-        self.values_DiscLoss_Z = []
-        self.values_L1Loss_Z = []
 
     def set_kernel(self, kernel):
         if kernel is not None:
@@ -155,16 +145,6 @@ class ZSSR:
         # Return the final post processed output.
         # noinspection PyUnboundLocalVariable
         return post_processed_output
-
-    def init_sess(self, init_weights=True):
-        if init_weights:
-            self.network.apply(self.weights_initiator)
-        # Initialize all counters etc
-        self.loss = [None] * self.conf.max_iters
-        self.mse, self.mse_rec, self.interp_mse, self.interp_rec_mse, self.mse_steps = [], [], [], [], []
-        self.iter = 0
-        self.learning_rate = self.conf.learning_rate
-        self.learning_rate_change_iter_nums = [0]
 
     def forward_pass(self, lr_son, hr_father_shape=None):
         # Run net on the input to get the output super-resolution (almost final result, only post-processing needed)
@@ -291,7 +271,7 @@ class ZSSR:
         crop_center = None
 
         hr_father, cropped_loss_map = \
-            random_augment(ims=self.hr_fathers_sources,
+            random_augment(ims=[self.input],
                            base_scales=[1.0] + [self.conf.scale_factor],
                            leave_as_is_probability=self.conf.augment_leave_as_is_probability,
                            no_interpolate_probability=self.conf.augment_no_interpolate_probability,
@@ -303,7 +283,7 @@ class ZSSR:
                            crop_size=self.conf.crop_size,
                            allow_scale_in_no_interp=self.conf.allow_scale_in_no_interp,
                            crop_center=crop_center,
-                           loss_map_sources=self.loss_map_sources)
+                           loss_map_sources=[self.loss_map])
         # set the kernel of the for father_to_son
         if kernel:
             self.set_kernel(kernel)
