@@ -198,7 +198,7 @@ class ZSSR:
                 self.learning_rate /= 10
 
                 # Keep track of learning rate changes for plotting purposes
-                self.learning_rate_change_iter_nums.append(self.iter)
+                self.learning_rate_change_iter_nums.append(self.epoch_num_Z)
                 return True
         return False
 
