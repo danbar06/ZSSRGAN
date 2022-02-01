@@ -84,6 +84,13 @@ class ZSSR:
             self.input = np.expand_dims(self.input, -1)
         self.input = self.input / 255. if self.input.dtype == 'uint8' else self.input
         self.gt = None
+
+        # backward support, probably should be deprecated later
+        self.sf = np.array(self.conf.scale_factor)
+
+        # set output shape
+        self.output_shape = np.uint(np.ceil(np.array(self.input.shape[0:2]) * self.sf))
+
         # Shift kernel to avoid misalignment
         self.kernel = None
         self.set_kernel(kernel)
@@ -125,9 +132,6 @@ class ZSSR:
         self.values_DiscLoss_Z = []
         self.values_L1Loss_Z = []
 
-        # backward support, probably should be deprecated later
-        self.sf = np.array(self.conf.scale_factor)
-
     def set_kernel(self, kernel):
         if kernel is not None:
             self.kernel = kernel_shift(kernel, self.conf.scale_factor)
@@ -141,7 +145,6 @@ class ZSSR:
     def run(self):
         # Run gradually on all scale factors (if only one jump then this loop only happens once)
         print('*' * 60 + '\nSTARTED ZSSR on: \"%s\"...' % self.input_img_path)
-        self.output_shape = np.uint(np.ceil(np.array(self.input.shape[0:2]) * self.sf))
 
         # Train the network
         self.train()
