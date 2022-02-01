@@ -8,6 +8,7 @@ from ZSSRforKernelGAN.ZSSR_network import *
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 
+
 class ZSSR:
     # Basic current state variables initialization / declaration
     kernel = None
@@ -204,7 +205,7 @@ class ZSSR:
                                                                      self.conf.run_test_every):],
                                                    1, cov=True)
 
-            # We take the the standard deviation as a measure
+            # We take the standard deviation as a measure
             std = math.sqrt(var)
 
             # Determine learning rate maintaining or reduction by the ration between slope and noise
@@ -247,77 +248,8 @@ class ZSSR:
     def train(self):
         # main training loop
         for self.iter in tqdm.tqdm(range(self.conf.max_iters), ncols=60):
-            # Use augmentation from original input image to create current father.
-            # If other scale factors were applied before, their result is also used (hr_fathers_in)
-            # crop_center = choose_center_of_crop(self.prob_map) if self.conf.choose_varying_crop else None
-            crop_center = None
-
-            self.hr_father, self.cropped_loss_map = \
-                random_augment(ims=self.hr_fathers_sources,
-                               base_scales=[1.0] + self.conf.scale_factors,
-                               leave_as_is_probability=self.conf.augment_leave_as_is_probability,
-                               no_interpolate_probability=self.conf.augment_no_interpolate_probability,
-                               min_scale=self.conf.augment_min_scale,
-                               max_scale=([1.0] + self.conf.scale_factors)[len(self.hr_fathers_sources) - 1],
-                               allow_rotation=self.conf.augment_allow_rotation,
-                               scale_diff_sigma=self.conf.augment_scale_diff_sigma,
-                               shear_sigma=self.conf.augment_shear_sigma,
-                               crop_size=self.conf.crop_size,
-                               allow_scale_in_no_interp=self.conf.allow_scale_in_no_interp,
-                               crop_center=crop_center,
-                               loss_map_sources=self.loss_map_sources)
-
-            # Get lr-son from hr-father
-            self.lr_son = self.father_to_son(self.hr_father)
-            # run network forward and back propagation, one iteration (This is the heart of the training)
-            # Zeroize gradients
-            self.optimizer_Z.zero_grad()
-            # ZSSR forward pass
-            pred = self.network.forward(self.lr_son, self.sf)
-            # Convert target to torch
-            hr_father = torch.tensor(self.hr_father).float().to(self.device)
-            cropped_loss_map = torch.tensor(self.cropped_loss_map, requires_grad=False).float().to(self.device)
-            # Channels to first dim
-            hr_father = torch.permute(hr_father, dims=(2, 0, 1))
-            cropped_loss_map = torch.permute(cropped_loss_map, dims=(2, 0, 1))
-            # Add batch dimension
-            hr_father = torch.unsqueeze(hr_father, dim=0)
-            cropped_loss_map = torch.unsqueeze(cropped_loss_map, dim=0)
-            # Pass ZSSR output through Discriminator
-            d_pred_fake = self.D.forward(pred)
-            # Final loss (Weighted (cropped_loss_map) L1 loss between label and output layer)
-            if self.conf.disc_loss:
-                loss = self.criterion(pred, hr_father, cropped_loss_map) + self.DiscLoss(d_last_layer=d_pred_fake, is_d_input_real=True, zssr_shape=True)
-            else:
-                loss = self.criterion(pred, hr_father, cropped_loss_map)
-            # Initiate backprop
-            loss.backward()
-            self.optimizer_Z.step()
-
-            """
-            # Reduce batch dim
-            output_img = torch.squeeze(pred)
-            # channels to last dim
-            output_img = torch.permute(output_img, dims=(1, 2, 0))
-            # Clip output between 0,1
-            output_img = torch.clamp(output_img, min=0, max=1)
-            # Convert torch to numpy
-            output_img = output_img.detach().numpy()
-            # need to check why this output is needed
-            self.train_output = output_img
-            """
-
-            # Test network
-            if self.conf.run_test and (not self.iter % self.conf.run_test_every):
-                self.quick_test()
-
-            # Consider changing learning rate or stop according to iteration number and losses slope
-            if self.learning_rate_policy():
-                for param_group in self.optimizer_Z.param_groups:
-                    param_group['lr'] = self.learning_rate
-
-            # stop when minimum learning rate was passed
-            if self.learning_rate < self.conf.min_learning_rate:
+            self.epoch_Z()
+            if self.stop_early_Z:
                 break
 
     def father_to_son(self, hr_father):
@@ -386,7 +318,7 @@ class ZSSR:
 
     def epoch_Z(self, kernels=None):
         # Increment epcho number of ZSSR
-        self.epcho_num_Z +=1
+        self.epcho_num_Z += 1
         # Use augmentation from original input image to create current father.
         # If other scale factors were applied before, their result is also used (hr_fathers_in)
         # crop_center = choose_center_of_crop(self.prob_map) if self.conf.choose_varying_crop else None
@@ -431,14 +363,14 @@ class ZSSR:
             # Pass ZSSR output through Discriminator
             d_pred_fake = self.D.forward(pred)
             # Final loss (Weighted (cropped_loss_map) L1 loss between label and output layer) + Discriminator loss
-            loss_Disc =  self.DiscLoss(d_last_layer=d_pred_fake,
-                                                                                     is_d_input_real=True,
-                                                                                     zssr_shape=True)
+            loss_Disc = self.DiscLoss(d_last_layer=d_pred_fake,
+                                      is_d_input_real=True,
+                                      zssr_shape=True)
         else:
             # Final loss (Weighted (cropped_loss_map) L1 loss between label and output layer)
             loss_Disc = 0
         # Total loss
-        loss = loss_L1 +loss_Disc
+        loss = loss_L1 + loss_Disc
         # Initiate backprop
         loss.backward()
         self.optimizer_Z.step()
@@ -468,45 +400,3 @@ class ZSSR:
         # stop when minimum learning rate was passed
         if self.learning_rate < self.conf.min_learning_rate:
             self.stop_early_Z = True
-
-        # track losses values for plotting
-        if self.verbose:
-            self.values_L1Loss_Z.append(loss_L1.item())
-            self.values_DiscLoss_Z.append(loss_Disc.item())
-
-    def plot_train_loss(self):
-        if not self.verbose:
-            return
-        plt.rc("font", size=16, family="Times New Roman")
-        fig = plt.figure(figsize=(10, 6))
-        # enabling a convert from Figure object numpy array
-        canvas = FigureCanvas(fig)
-        # config axes parameters
-        axs = fig.add_axes([0, 0, 1, 1])
-        axs.set_xlabel("Number of epchos", fontdict={"size": 20, "weight": "bold"})
-        axs.set_ylabel("losses", fontdict={"size": 20, "weight": "bold"})
-        # x axis is number of epochs
-        x = np.linspace(self.epcho_num_Z)
-        # plot L1 loss
-        axs.plot(x,
-                 self.values_L1Loss_Z,
-                 c='yellow',
-                 label=r'$Weighted L1 loss$')
-        # plot Discriminator on ZSSR output
-        if self.conf.disc_loss:
-            axs.plot(x,
-                     self.values_DiscLoss_Z,
-                     c='red',
-                     label=r'$Discriminator loss$')
-        # plot total loss
-        values_loss_total = np.array(self.values_L1Loss_Z) + np.array(self.values_DiscLoss_Z)
-        axs.plot(x,
-                 values_loss_total,
-                 c='blue',
-                 label=r'$Total loss$')
-
-        plt.legend()
-        # convert Figure to Numpy array
-        canvas.draw()
-        image = np.frombuffer(canvas.tostring_rgb(), dtype='uint8')
-        return image
