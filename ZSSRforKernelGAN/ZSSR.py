@@ -187,25 +187,34 @@ class ZSSR:
 
         # 1. True MSE (only if ground-truth was given), note: this error is before post-processing.
         self.sr = self.forward_pass(self.input)
-        self.mse = (self.mse + [np.mean(np.ndarray.flatten(np.square(self.gt_per_sf - self.sr)))]
-                    if self.gt_per_sf is not None else None)
+        if self.gt_per_sf is not None:
+            mse = np.mean(np.ndarray.flatten(np.square(self.gt_per_sf - self.sr)))
+            self.mse = self.mse + [mse]
+            self.writer.add_scalar("True MSE of ground-truth/train", mse, self.epoch_num_Z)
+        else:
+            self.mse = None
 
         # 2. Reconstruction MSE, run for reconstruction- try to reconstruct the input from a downscaled version of it
         self.reconstruct_output = self.forward_pass(self.father_to_son(self.input), self.input.shape)
-        self.mse_rec.append(np.mean(np.ndarray.flatten(np.square(self.input - self.reconstruct_output))))
+        mse_reconstruct = np.mean(np.ndarray.flatten(np.square(self.input - self.reconstruct_output)))
+        self.mse_rec.append(mse_reconstruct)
+        self.writer.add_scalar("Reconstruction MSE of low-res/train", mse_reconstruct, self.epoch_num_Z)
 
         # 3. True MSE of simple interpolation for reference (only if ground-truth was given)
         if self.gt_per_sf is not None:
             interp_sr = imresize(self.input, self.sf, self.output_shape, self.conf.upscale_method)
-
-            self.interp_mse = self.interp_mse + [np.mean(np.ndarray.flatten(np.square(self.gt_per_sf - interp_sr)))]
+            mse_interpolation = np.mean(np.ndarray.flatten(np.square(self.gt_per_sf - interp_sr)))
+            self.interp_mse = self.interp_mse + [mse_interpolation]
+            self.writer.add_scalar("Interpolation MSE of ground-truth/train", mse_interpolation, self.epoch_num_Z)
         else:
             self.interp_mse = None
 
         # 4. Reconstruction MSE of simple interpolation over downscaled input
         interp_rec = imresize(self.father_to_son(self.input), self.sf, self.input.shape[:], self.conf.upscale_method)
-
-        self.interp_rec_mse.append(np.mean(np.ndarray.flatten(np.square(self.input - interp_rec))))
+        mse_interpolation_reconstruct = np.mean(np.ndarray.flatten(np.square(self.input - interp_rec)))
+        self.interp_rec_mse.append(mse_interpolation_reconstruct)
+        self.writer.add_scalar("Interpolation reconstruction MSE of low-res/train", mse_interpolation_reconstruct,
+                               self.epoch_num_Z)
 
         # Track the iters in which tests are made for the graphics x axis
         self.mse_steps.append(self.epoch_num_Z)
