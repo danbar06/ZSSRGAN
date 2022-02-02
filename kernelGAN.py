@@ -1,8 +1,12 @@
+import time
+import os
+import matplotlib.pyplot as plt
 import torch
 import loss
+from ZSSRforKernelGAN.ZSSR import ZSSR
 import networks
 import torch.nn.functional as F
-from util import save_final_kernel, run_zssr, post_process_k
+from util import save_final_kernel, post_process_k, analytic_kernel
 
 
 class KernelGAN:
@@ -22,6 +26,11 @@ class KernelGAN:
         # Define the GAN
         self.G = networks.Generator(conf).to(self.device)
         self.D = networks.Discriminator(conf).to(self.device)
+
+        # scale factor to for ZSSR
+        sf = 4 if self.conf.X4 else 2
+        # Initiate ZSSR without kernel, kernel will be added once it computed
+        self.ZSSR = ZSSR(conf.input_image_path, scale_factor=sf, kernel=None, is_real_img=conf.real_image, noise_scale=conf.noise_scale, disc_loss=self.conf.DL)
 
         # Calculate D's input & output shape according to the shaving done by the networks
         self.d_input_shape = self.G.output_size
@@ -66,14 +75,14 @@ class KernelGAN:
 
     def train(self, g_input, d_input):
         self.set_input(g_input, d_input)
-        self.train_g()
-        self.train_d()
+        self.epoch_G()
+        self.epoch_D()
 
     def set_input(self, g_input, d_input):
         self.g_input = g_input.contiguous()
         self.d_input = d_input.contiguous()
 
-    def train_g(self):
+    def epoch_G(self):
         # Zeroize gradients
         self.optimizer_G.zero_grad()
         # Generator forward pass
@@ -103,7 +112,7 @@ class KernelGAN:
                loss_boundaries * self.lambda_boundaries + loss_centralized * self.lambda_centralized + \
                loss_sparse * self.lambda_sparse
 
-    def train_d(self):
+    def epoch_D(self):
         # Zeroize gradients
         self.optimizer_D.zero_grad()
         # Discriminator forward pass over real example
@@ -125,5 +134,22 @@ class KernelGAN:
         final_kernel = post_process_k(self.curr_k, n=self.conf.n_filtering)
         save_final_kernel(final_kernel, self.conf)
         print('KernelGAN estimation complete!')
-        run_zssr(final_kernel, self.conf)
+        self.run_zssr(final_kernel)
         print('FINISHED RUN (see --%s-- folder)\n' % self.conf.output_dir_path + '*' * 60 + '\n\n')
+
+
+    def run_zssr(self, final_kernel):
+        """Performs ZSSR with estimated kernel for wanted scale factor"""
+        start_time = time.time()
+        print('~' * 30 + '\nRunning ZSSR X%d ' % (4 if self.conf.X4 else 2) + f"with{'' if self.conf.use_kernel else 'out'} kernel and with{'' if self.conf.DL else 'out'} discriminator loss...")
+        if self.conf.use_kernel:
+            if self.conf.X4:
+                self.ZSSR.set_kernel(analytic_kernel(final_kernel))
+            else:
+                self.ZSSR.set_kernel(final_kernel)
+        self.ZSSR.set_disc_loss(self.D, self.criterionGAN)
+        sr = self.ZSSR.run()
+        max_val = 255 if sr.dtype == 'uint8' else 1.
+        plt.imsave(os.path.join(self.conf.output_dir_path, 'ZSSR_%s.png' % self.conf.img_name), sr, vmin=0, vmax=max_val, dpi=1)
+        runtime = int(time.time() - start_time)
+        print('Completed! runtime=%d:%d\n' % (runtime // 60, runtime % 60) + '~' * 30)
