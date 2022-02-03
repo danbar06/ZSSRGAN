@@ -1,4 +1,4 @@
-from torch.utils.data import DataLoader, Dataset, WeightedRandomSampler
+from torch.utils.data import Dataset
 from ZSSRforKernelGAN.zssr_utils import *
 
 
@@ -7,7 +7,7 @@ class ZSSRDataset(Dataset):
     def __init__(self, image_path, conf):
         super().__init__()
         self.image_path = image_path
-        self.self.conf = conf
+        self.conf = conf
         self.im = read_im(image_path)
         self.loss_map = create_loss_map(im=self.im) if self.conf.grad_based_loss_map else np.ones_like(self.im)
 
