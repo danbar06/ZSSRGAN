@@ -235,7 +235,3 @@ def read_im(img_path):
         im = np.expand_dims(im, -1)
     im = im / 255. if im.dtype == 'uint8' else im
     return im
-
-def im_torch_2_im_numpy(im):
-
-
