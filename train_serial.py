@@ -25,7 +25,7 @@ def train(conf):
 
     # train ZSSR as GAN
     start_time = time.time()
-    print('*' * 60 + '\nSTARTED ZSSR on: \"%s\"...' % conf.input_img_path)
+    print('*' * 60 + '\nSTARTED ZSSR on: \"%s\"...' % conf.input_image_path)
     print('~' * 30 + '\nRunning ZSSR X%d ' % (
         4 if gan.conf.X4 else 2) + f"with{'' if gan.conf.use_kernel else 'out'} kernel and with{'' if gan.conf.DL else 'out'} discriminator loss...")
     # check which kernel to use

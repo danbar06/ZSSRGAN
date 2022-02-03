@@ -140,8 +140,8 @@ class KernelGAN:
         z_output = self.ZSSR.network.forward(self.ZSSR.father_to_son(d_input), self.ZSSR.sf)
         d_pred_fake = self.D.forward((z_output + torch.randn_like(z_output) / 255.).detach())
         # Calculate discriminator loss
-        loss_d_fake = self.criterionGAN(d_pred_fake, is_d_input_real=False)
-        loss_d_real = self.criterionGAN(d_pred_real, is_d_input_real=True)
+        loss_d_fake = self.criterionGAN(d_pred_fake, is_d_input_real=False, zssr_shape=True)
+        loss_d_real = self.criterionGAN(d_pred_real, is_d_input_real=True, zssr_shape=True)
         loss_d = (loss_d_fake + loss_d_real) * 0.5
         # Calculate gradients, note that gradients are not propagating back through generator
         loss_d.backward()
