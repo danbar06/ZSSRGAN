@@ -1,14 +1,14 @@
 import os
 import tqdm
 import time
-import matplotlib.pyplot as plt
-
+from configs import Config
 from data import DataGenerator
 from kernelGAN import KernelGAN
 from learner import Learner
 import warnings
-from ZSSRforKernelGAN.ZSSR_data_handling import ZSSRDataset
+import matplotlib.pyplot as plt
 from util import analytic_kernel
+from ZSSRforKernelGAN.ZSSR_data_handling import ZSSRDataset
 warnings.filterwarnings("ignore")
 
 
