@@ -183,5 +183,5 @@ def visual_comparison():
 
 
 if __name__ == '__main__':
-    # psnr_ssim_comparison()
+    psnr_ssim_comparison()
     visual_comparison()
