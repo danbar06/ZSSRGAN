@@ -3,8 +3,6 @@
 
 <br/>
 <br/>
-<br/>
-<br/>
 
 ## Abstract
 The project considers the problem of 'Super Resolution' (SR).
