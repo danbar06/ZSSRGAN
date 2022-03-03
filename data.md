@@ -1,3 +1,1 @@
-This is the data page.
-
-[Home](index.md)
+## This is the data page.
