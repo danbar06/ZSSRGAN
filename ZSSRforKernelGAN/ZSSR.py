@@ -313,7 +313,10 @@ class ZSSR:
             # Final loss (Weighted (cropped_loss_map) L1 loss between label and output layer)
             loss_Disc = 0
         if not self.norm_factor:
-            self.norm_factor = (loss_L1/loss_Disc).detach()
+            if self.conf.disc_loss:
+                self.norm_factor = (loss_L1/loss_Disc).detach()
+            else:
+                self.norm_factor = 1
         # Total loss
         loss = loss_L1 + self.loss_ratio*self.norm_factor*loss_Disc
         # Initiate backprop
