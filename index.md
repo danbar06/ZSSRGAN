@@ -11,5 +11,3 @@ In KernelGAN only the generator of the network was used as a downscale kernel to
 However, in SinGAN, it was shown that adversarial training could be used to give state of the art (SOTA) results for SR,
 but long times are required to train the network.
 We propose to also utilize the discriminator of KernelGAN in order to improve the result for SR within shorter times.
-
-[Results](data.md)
