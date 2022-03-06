@@ -9,8 +9,6 @@ table, th, td {
     <tbody>
         <tr class="shadow f1_card">
             <td rowspan="1" valign="top">
-                <img src="Lincoln.png"/>
-                <br>
                 <button onclick="change_img('Lincoln', 'ZSSR')" 
       style="font-size: 12px;background-color:lightgreen">ZSSR</button>
                 <br>
@@ -19,6 +17,8 @@ table, th, td {
                 <br>
                 <button onclick="change_img('Lincoln', 'KERGAN')"
       style="font-size: 12px;background-color:tomato">KernelGAN</button>
+                <br>
+                <img src="Lincoln.png"/>
             </td>
             <td valign="top">
                 <img src="Lincoln_ZSSR.png" id="Lincoln switch"/>
