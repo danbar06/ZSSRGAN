@@ -7,15 +7,16 @@
         </div>
         <div class="front face">
             <img src="Lincoln_ZSSR.png" id="Lincoln switch"/>
-            <button onclick="switch('Lincoln', 'ZSSRGAN')">ZSSRGAN (Ours)</button>
-            <button onclick="switch('Lincoln', 'ZSSR')">ZSSR</button>
-            <button onclick="switch('Lincoln', 'KERGAN')">KernelGAN</button>
+            <br>
+            <button onclick="change_img('Lincoln', 'ZSSRGAN')">ZSSRGAN (Ours)</button>
+            <button onclick="change_img('Lincoln', 'ZSSR')">ZSSR</button>
+            <button onclick="change_img('Lincoln', 'KERGAN')">KernelGAN</button>
         </div>
     </div>
 </div>
 
 <script>
-function switch(name, method) {
+function change_img(name, method) {
   document.getElementById(name + " switch").src = "../ZSSRGAN/" + name + "_" + method + ".png";
 }
 </script>
