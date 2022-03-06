@@ -6,7 +6,7 @@
             <img src="Lincoln.png"/>
         </div>
         <div class="front face">
-            <img src="Lincoln_zssr.png"/>
+            <img src="Lincoln_ZSSR.png"/>
             <button onclick="zssrgan(Lincoln)">Click me</button>
         </div>
     </div>
