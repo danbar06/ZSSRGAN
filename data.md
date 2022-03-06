@@ -1,6 +1,6 @@
 ## Historic image: Abraham Lincoln photograph - SR x2
-<div class="f1_container">
-    <table>
+<table>
+    <tbody>
         <tr class="shadow f1_card">
             <td rowspan="1" valign="top">
                 <img src="Lincoln.png"/>
@@ -18,8 +18,8 @@
                 <img src="Lincoln_ZSSR.png" id="Lincoln switch"/>
             </td>
         </tr>
-    <\table>
-</div>
+    <\tbody>
+<\table>
             
 <script>
 function change_img(name, method) {
