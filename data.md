@@ -24,8 +24,8 @@ table, th, td {
                 <img src="Lincoln_ZSSR.png" id="Lincoln switch"/>
             </td>
         </tr>
-    <\tbody>
-<\table>
+    </tbody>
+</table>
             
 <script>
 function change_img(name, method) {
