@@ -32,9 +32,18 @@ table, th, td {
   
 </body>
 <script>
+function get_name(name){
+  if (name == "ZSSRGAN"){
+    return "ZSSRGAN (Ours)";
+  }
+  if (name == "KERGAN"){
+    return "KernelGAN";
+  }
+  return "ZSSR";
+}
 function change_img(name, method) {
   document.getElementById(name + " img").src = "../ZSSRGAN/" + name + "_" + method + ".png";
-  document.getElementById(name + " text").innerHTML = method;
+  document.getElementById(name + " text").innerHTML = get_name(method);
 }
 </script>
 </html>
