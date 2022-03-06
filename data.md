@@ -8,7 +8,7 @@
             <img src="Lincoln_ZSSR.png" id="Lincoln switch"/>
             <br>
             <button onclick="change_img('Lincoln', 'ZSSR')" 
-  color=#4CAF50>ZSSR</button>
+  style="background-color:lightgreen">ZSSR</button>
             <button onclick="change_img('Lincoln', 'ZSSRGAN')">ZSSRGAN (Ours)</button>
             <button onclick="change_img('Lincoln', 'KERGAN')">KernelGAN</button>
         </td>
