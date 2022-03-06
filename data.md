@@ -10,7 +10,7 @@ table, th, td {
 </head>
 <body>
 
-<table>
+<table cellspacing=12>
     <tbody>
         <tr class="shadow f1_card">
             <td rowspan="1" valign="top">
@@ -18,8 +18,7 @@ table, th, td {
             </td>
             <td rowspan="1" valign="top">
                 <img src="Lincoln.png"/>
-            </td>
-            <td rowspan="1" valign="top">
+                <br>
                 <button onclick="change_img('Lincoln', 'ZSSR')" 
       style="font-size: 12px;background-color:lightgreen">ZSSR</button>
                 <br>
