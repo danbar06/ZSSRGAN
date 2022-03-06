@@ -14,7 +14,8 @@ table, th, td {
     <tbody>
         <tr>
             <td>
-                <img src="../ZSSRGAN/Lincoln_ZSSR.png" id="Lincoln switch">
+              <font size="5"><u><b id="Lincoln text">ZSSRGAN</b><br></u></font>
+                <img src="../ZSSRGAN/Lincoln_ZSSRGAN.png" id="Lincoln img">
             </td>
             <td style="vertical-align:bottom">
                 <button onclick="change_img('Lincoln', 'ZSSR')" style="font-size: 12px;background-color:lightgreen">ZSSR</button>
@@ -32,7 +33,8 @@ table, th, td {
 </body>
 <script>
 function change_img(name, method) {
-  document.getElementById(name + " switch").src = "../ZSSRGAN/" + name + "_" + method + ".png";
+  document.getElementById(name + " img").src = "../ZSSRGAN/" + name + "_" + method + ".png";
+  document.getElementById(name + " text").innerHTML = method;
 }
 </script>
 </html>
