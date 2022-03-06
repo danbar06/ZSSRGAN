@@ -10,23 +10,20 @@ table, th, td {
 </head>
 <body>
 
-<table cellspacing=12>
+<table width="100%" height="250px" style="font-family: Arial, Helvetica, sans-serif; font-size: 10pt; border: 1.0pt solid windowtext; vertical-align: top;">
     <tbody>
-        <tr>
-            <td valign="top">
-                <img src="Lincoln_ZSSR.png" id="Lincoln switch"/>
+        <tr align="center" valign="top" colspan="1">
+            <td>
+                <img src="../ZSSRGAN/Lincoln_ZSSR.png" id="Lincoln switch">
             </td>
-            <td valign="top">
-                <img src="Lincoln.png"/>
+            <td style="vertical-align:bottom">
+    
+                <button onclick="change_img('Lincoln', 'ZSSR')" style="font-size: 12px;background-color:lightgreen">ZSSR</button>
                 <br>
-                <button onclick="change_img('Lincoln', 'ZSSR')" 
-      style="font-size: 12px;background-color:lightgreen">ZSSR</button>
+                <button onclick="change_img('Lincoln', 'ZSSRGAN')" style="font-size: 12px;background-color:lightblue">ZSSRGAN (Ours)</button>
                 <br>
-                <button onclick="change_img('Lincoln', 'ZSSRGAN')"
-      style="font-size: 12px;background-color:lightblue">ZSSRGAN (Ours)</button>
-                <br>
-                <button onclick="change_img('Lincoln', 'KERGAN')"
-      style="font-size: 12px;background-color:tomato">KernelGAN</button>
+                <button onclick="change_img('Lincoln', 'KERGAN')" style="font-size: 12px;background-color:tomato">KernelGAN</button>
+                <img src="Lincoln.png">
             </td>
         </tr>
     </tbody>
