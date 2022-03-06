@@ -8,9 +8,11 @@
             <img src="Lincoln_ZSSR.png" id="Lincoln switch"/>
             <br>
             <button onclick="change_img('Lincoln', 'ZSSR')" 
-  style="background-color:lightgreen">ZSSR</button>
-            <button onclick="change_img('Lincoln', 'ZSSRGAN')">ZSSRGAN (Ours)</button>
-            <button onclick="change_img('Lincoln', 'KERGAN')">KernelGAN</button>
+  style="font-size: 12px;background-color:lightgreen">ZSSR</button>
+            <button onclick="change_img('Lincoln', 'ZSSRGAN')"
+  style="font-size: 12px;background-color:lightblue">ZSSRGAN (Ours)</button>
+            <button onclick="change_img('Lincoln', 'KERGAN')"
+  style="font-size: 12px;background-color:tomato">KernelGAN</button>
         </td>
     </tr>
 </div>
