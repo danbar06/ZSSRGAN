@@ -3,10 +3,10 @@
 <div class="f1_container">
     <div class="shadow f1_card">
         <div class="front face" id="Lincoln">
-            <img src="data/Lincoln.png"/>
+            <img src="Lincoln.png"/>
         </div>
         <div class="front face">
-            <img src="data/Lincoln_zssr.png"/>
+            <img src="Lincoln_zssr.png"/>
             <button onclick="zssrgan(Lincoln)">Click me</button>
         </div>
     </div>
