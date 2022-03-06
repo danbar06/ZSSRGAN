@@ -1,4 +1,10 @@
 ## Historic image: Abraham Lincoln photograph - SR x2
+
+<style>
+table, th, td {
+  border: 0px solid black;
+}
+</style>
 <table>
     <tbody>
         <tr class="shadow f1_card">
