@@ -1,15 +1,19 @@
-# Historic image: Check-point Charlie (end of World-War II) - SR x2
+## Historic image: Check-point Charlie (end of World-War II) - SR x2
+# Real image
 <div class="f1_container">
     <div class="shadow f1_card">
+        <div class="front face" id="Lincoln">
+            <img src="data/Lincoln.png"/>
+        </div>
         <div class="front face">
-            <img src="http://media-cdn.tripadvisor.com/media/photo-s/03/48/0b/14/dolphin-view-chalets.jpg" style="height: 281px; width: 450px;" />
-            <button name="ZSSRGAN" onclick="myFunction()">Click me</button>
+            <img src="data/Lincoln_zssr.png"/>
+            <button name="Lincoln" onclick="zssr(this)">Click me</button>
         </div>
     </div>
 </div>
 
 <script>
-function myFunction() {
-  document.getElementById("ZSSRGAN").style.color = "red";
+function zssr(this) {
+  document.getElementById(this.name).src = this.name + "_ZSSR.png";
 }
 </script>
