@@ -12,7 +12,7 @@ table, th, td {
 
 <table cellspacing=12>
     <tbody>
-        <tr class="shadow f1_card">
+        <tr>
             <td valign="top">
                 <img src="Lincoln_ZSSR.png" id="Lincoln switch"/>
             </td>
@@ -32,26 +32,6 @@ table, th, td {
     </tbody>
 </table>
   
-<div class="container">
-    <div class="row">
-      <div class="col-md-3">
-            <img src="Lincoln.png"/>
-            <br>
-            <button onclick="change_img('Lincoln', 'ZSSR')" 
-  style="font-size: 12px;background-color:lightgreen">ZSSR</button>
-            <br>
-            <button onclick="change_img('Lincoln', 'ZSSRGAN')"
-  style="font-size: 12px;background-color:lightblue">ZSSRGAN (Ours)</button>
-            <br>
-            <button onclick="change_img('Lincoln', 'KERGAN')"
-  style="font-size: 12px;background-color:tomato">KernelGAN</button>
-      </div>  
-      <div class="col-md-9">
-            <img src="Lincoln_ZSSR.png" id="Lincoln switch"/>
-      </div> 
-    </div>
-</div>
-
 </body>
 <script>
 function change_img(name, method) {
