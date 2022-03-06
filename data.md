@@ -13,7 +13,7 @@ table, th, td {
 <table>
     <tbody>
         <tr class="shadow f1_card">
-            <td rowspan="1" valign="top">
+            <td rowspan="1" valign="bottom">
                 <button onclick="change_img('Lincoln', 'ZSSR')" 
       style="font-size: 12px;background-color:lightgreen">ZSSR</button>
                 <br>
@@ -23,10 +23,10 @@ table, th, td {
                 <button onclick="change_img('Lincoln', 'KERGAN')"
       style="font-size: 12px;background-color:tomato">KernelGAN</button>
                 <br>
-                <img src="https://danbar06.github.io/ZSSRGAN/Lincoln.png"/>
+                <img src="Lincoln.png"/>
             </td>
             <td rowspan="1" valign="top">
-                <img src="https://danbar06.github.io/ZSSRGAN/Lincoln_ZSSR.png" id="Lincoln switch"/>
+                <img src="Lincoln_ZSSR.png" id="Lincoln switch"/>
             </td>
         </tr>
     </tbody>
