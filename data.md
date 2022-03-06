@@ -7,13 +7,13 @@
         </div>
         <div class="front face">
             <img src="data/Lincoln_zssr.png"/>
-            <button name="Lincoln" onclick="zssr(this)">Click me</button>
+            <button onclick="zssrgan(Lincoln)">Click me</button>
         </div>
     </div>
 </div>
 
 <script>
-function zssr(this) {
-  document.getElementById(this.name).src = this.name + "_ZSSR.png";
+function zssrgan(name) {
+  document.getElementById(name).src = name + "_ZSSRGAN.png";
 }
 </script>
