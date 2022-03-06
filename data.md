@@ -19,7 +19,7 @@ table, th, td {
             <td rowspan="1" valign="top">
                 <img src="Lincoln.png"/>
             </td>
-            <td>
+            <td rowspan="1" valign="top">
                 <button onclick="change_img('Lincoln', 'ZSSR')" 
       style="font-size: 12px;background-color:lightgreen">ZSSR</button>
                 <br>
