@@ -10,19 +10,19 @@ table, th, td {
 </head>
 <body>
 
-<table width="100%" height="250px" style="font-family: Arial, Helvetica, sans-serif; font-size: 10pt; border: 1.0pt solid windowtext; vertical-align: top;">
+<table>
     <tbody>
-        <tr align="center" valign="top" colspan="1">
+        <tr>
             <td>
                 <img src="../ZSSRGAN/Lincoln_ZSSR.png" id="Lincoln switch">
             </td>
             <td style="vertical-align:bottom">
-    
                 <button onclick="change_img('Lincoln', 'ZSSR')" style="font-size: 12px;background-color:lightgreen">ZSSR</button>
                 <br>
                 <button onclick="change_img('Lincoln', 'ZSSRGAN')" style="font-size: 12px;background-color:lightblue">ZSSRGAN (Ours)</button>
                 <br>
                 <button onclick="change_img('Lincoln', 'KERGAN')" style="font-size: 12px;background-color:tomato">KernelGAN</button>
+                <br>
                 <img src="Lincoln.png">
             </td>
         </tr>
