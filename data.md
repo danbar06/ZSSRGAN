@@ -7,13 +7,15 @@
         </div>
         <div class="front face">
             <img src="Lincoln_ZSSR.png" id="Lincoln switch"/>
-            <button onclick="zssrgan('Lincoln')">Click me</button>
+            <button onclick="switch('Lincoln', 'ZSSRGAN')">ZSSRGAN (Ours)</button>
+            <button onclick="switch('Lincoln', 'ZSSR')">ZSSR</button>
+            <button onclick="switch('Lincoln', 'KERGAN')">KernelGAN</button>
         </div>
     </div>
 </div>
 
 <script>
-function zssrgan(name) {
-  document.getElementById(name + " switch").src = "../" + name + "_ZSSRGAN.png";
+function switch(name, method) {
+  document.getElementById(name + " switch").src = "../ZSSRGAN/" + name + "_" + method + ".png";
 }
 </script>
