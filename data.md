@@ -6,14 +6,15 @@
             <img src="Lincoln.png"/>
         </div>
         <div class="front face">
-            <img src="Lincoln_ZSSR.png"/>
-            <button onclick="zssrgan(Lincoln)">Click me</button>
+            <img src="Lincoln_ZSSR.png" id="Lincoln-switch"/>
+            <button onclick="zssrgan(Lincoln-switch)">Click me</button>
         </div>
     </div>
 </div>
 
 <script>
 function zssrgan(name) {
+  print("name: " + name)
   document.getElementById(name).src = name + "_ZSSRGAN.png";
 }
 </script>
