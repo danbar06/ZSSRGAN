@@ -14,7 +14,6 @@
 
 <script>
 function zssrgan(name) {
-  print("name: " + name)
   document.getElementById(name + " switch").src = "../" + name + "_ZSSRGAN.png";
 }
 </script>
