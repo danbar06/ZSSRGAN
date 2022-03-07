@@ -15,7 +15,7 @@ table, th, td {
         <tr>
             <td>
               <font size="5"><u><b id="Lincoln text">ZSSRGAN</b><br></u></font>
-                <img src="../ZSSRGAN/Lincoln_ZSSRGAN.png" id="Lincoln img">
+                <img src="../ZSSRGAN/data/Lincoln_ZSSRGAN.png" id="Lincoln img">
             </td>
             <td style="vertical-align:bottom">
                 <button onclick="change_img('Lincoln', 'ZSSR')" style="font-size: 12px;background-color:lightgreen">ZSSR</button>
@@ -24,7 +24,87 @@ table, th, td {
                 <br>
                 <button onclick="change_img('Lincoln', 'KERGAN')" style="font-size: 12px;background-color:tomato">KernelGAN</button>
                 <br>
-                <img src="Lincoln.png">
+                <img src="../ZSSRGAN/data/Lincoln.png">
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<table>
+    <tbody>
+        <tr>
+            <td>
+              <font size="5"><u><b id="cars text">ZSSRGAN</b><br></u></font>
+                <img src="../ZSSRGAN/data/cars_ZSSRGAN.png" id="cars img">
+            </td>
+            <td style="vertical-align:bottom">
+                <button onclick="change_img('cars', 'ZSSR')" style="font-size: 12px;background-color:lightgreen">ZSSR</button>
+                <br>
+                <button onclick="change_img('cars', 'ZSSRGAN')" style="font-size: 12px;background-color:lightblue">ZSSRGAN (Ours)</button>
+                <br>
+                <button onclick="change_img('cars', 'KERGAN')" style="font-size: 12px;background-color:tomato">KernelGAN</button>
+                <br>
+                <img src="../ZSSRGAN/data/cars.png">
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<table>
+    <tbody>
+        <tr>
+            <td>
+              <font size="5"><u><b id="charlie text">ZSSRGAN</b><br></u></font>
+                <img src="../ZSSRGAN/data/charlie_ZSSRGAN.png" id="charlie img">
+            </td>
+            <td style="vertical-align:bottom">
+                <button onclick="change_img('charlie', 'ZSSR')" style="font-size: 12px;background-color:lightgreen">ZSSR</button>
+                <br>
+                <button onclick="change_img('charlie', 'ZSSRGAN')" style="font-size: 12px;background-color:lightblue">ZSSRGAN (Ours)</button>
+                <br>
+                <button onclick="change_img('charlie', 'KERGAN')" style="font-size: 12px;background-color:tomato">KernelGAN</button>
+                <br>
+                <img src="../ZSSRGAN/data/charlie.png">
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<table>
+    <tbody>
+        <tr>
+            <td>
+              <font size="5"><u><b id="flowers text">ZSSRGAN</b><br></u></font>
+                <img src="../ZSSRGAN/data/flowers_ZSSRGAN.png" id="flowers img">
+            </td>
+            <td style="vertical-align:bottom">
+                <button onclick="change_img('flowers', 'ZSSR')" style="font-size: 12px;background-color:lightgreen">ZSSR</button>
+                <br>
+                <button onclick="change_img('flowers', 'ZSSRGAN')" style="font-size: 12px;background-color:lightblue">ZSSRGAN (Ours)</button>
+                <br>
+                <button onclick="change_img('flowers', 'KERGAN')" style="font-size: 12px;background-color:tomato">KernelGAN</button>
+                <br>
+                <img src="../ZSSRGAN/data/flowers.png">
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<table>
+    <tbody>
+        <tr>
+            <td>
+              <font size="5"><u><b id="salamandra text">ZSSRGAN</b><br></u></font>
+                <img src="../ZSSRGAN/data/salamandra_ZSSRGAN.png" id="salamandra img">
+            </td>
+            <td style="vertical-align:bottom">
+                <button onclick="change_img('salamandra', 'ZSSR')" style="font-size: 12px;background-color:lightgreen">ZSSR</button>
+                <br>
+                <button onclick="change_img('salamandra', 'ZSSRGAN')" style="font-size: 12px;background-color:lightblue">ZSSRGAN (Ours)</button>
+                <br>
+                <button onclick="change_img('salamandra', 'KERGAN')" style="font-size: 12px;background-color:tomato">KernelGAN</button>
+                <br>
+                <img src="../ZSSRGAN/data/salamandra.png">
             </td>
         </tr>
     </tbody>
@@ -42,7 +122,7 @@ function get_name(name){
   return "ZSSR";
 }
 function change_img(name, method) {
-  document.getElementById(name + " img").src = "../ZSSRGAN/" + name + "_" + method + ".png";
+  document.getElementById(name + " img").src = "../ZSSRGAN/data/" + name + "_" + method + ".png";
   document.getElementById(name + " text").innerHTML = get_name(method);
 }
 </script>
