@@ -1,5 +1,3 @@
-## Historic image: Abraham Lincoln photograph - SR x2
-
 <html>
 <head>
 <style>
@@ -10,6 +8,7 @@ table, th, td {
 </head>
 <body>
 
+<span style="font-weight: bold; font-size: 1.5em; "><u>Historic image: Abraham Lincoln photograph - SR x2 </u></span>
 <table>
     <tbody>
         <tr>
@@ -29,7 +28,8 @@ table, th, td {
         </tr>
     </tbody>
 </table>
-
+<br>
+<span style="font-weight: bold; font-size: 1.5em; "><u>Colored image: A garage with cars - SR x2 </u></span>
 <table>
     <tbody>
         <tr>
@@ -49,7 +49,8 @@ table, th, td {
         </tr>
     </tbody>
 </table>
-
+<br>
+<span style="font-weight: bold; font-size: 1.5em; "><u>Historic image: Check-point Charlie (end of World-War II) - SR x2 </u></span>
 <table>
     <tbody>
         <tr>
@@ -69,7 +70,8 @@ table, th, td {
         </tr>
     </tbody>
 </table>
-
+<br>
+<span style="font-weight: bold; font-size: 1.5em; "><u>Colored image: Flowers - SR x2 </u></span>
 <table>
     <tbody>
         <tr>
@@ -89,7 +91,8 @@ table, th, td {
         </tr>
     </tbody>
 </table>
-
+<br>
+<span style="font-weight: bold; font-size: 1.5em; "><u>Colored image: Gaudi's Salamandra - SR x2 </u></span>
 <table>
     <tbody>
         <tr>
