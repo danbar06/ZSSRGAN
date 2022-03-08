@@ -1,12 +1,13 @@
-<html>
+<html style="height:100%;">
 <head>
 <style>
+body { position:absolute; top:0; bottom:0; right:0; left:0; }
 table, th, td {
   border: 0px solid black;
 }
 </style>
 </head>
-<body style="horizontal-align:left">
+<body>
 
 <span style="font-weight: bold; font-size: 1.5em; "><u>Historic image: Abraham Lincoln photograph - SR x2 </u></span>
 <table>
