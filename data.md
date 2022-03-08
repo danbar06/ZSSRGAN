@@ -153,6 +153,11 @@ img {width:auto; height:auto;}
     <table>
         <tbody>
             <tr>
+              <td>
+                  <font size="5"><u><b id="psnr text">(PSNR/SSIM) 28.566/0.951</b><br></u></font>
+              </td>
+            </tr>
+            <tr>
                 <td>
                   <font size="5"><u><b id="baby text">ZSSRGAN</b><br></u></font>
                     <img src="../ZSSRGAN/data/baby_ZSSRGAN.png" id="baby img">
@@ -166,11 +171,6 @@ img {width:auto; height:auto;}
                     <br>
                     <button onclick="change_img('baby', 'GT')" style="font-size: 12px;background-color:tomato" class="button gt">Ground Truth</button>
                 </td>
-            </tr>
-            <tr>
-              <td>
-                  <font size="5"><u><b id="psnr text">(PSNR/SSIM) 28.566/0.951</b><br></u></font>
-              </td>
             </tr>
         </tbody>
     </table>
@@ -201,7 +201,7 @@ function change_img(name, method) {
   document.getElementById(name + " img").src = "../ZSSRGAN/data/" + name + "_" + method + ".png";
   document.getElementById(name + " text").innerHTML = get_name(method);
   if (name == 'baby'){
-    document.getElementById('psnt text').innerHTML = "(PSNR/SSIM) " + get_psnr(method);
+    document.getElementById('psnr text').innerHTML = "(PSNR/SSIM) " + get_psnr(method);
   }
 }
 </script>
