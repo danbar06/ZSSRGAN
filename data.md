@@ -131,9 +131,6 @@ function change_img(name, method) {
   document.getElementById(name + " img").src = "../ZSSRGAN/data/" + name + "_" + method + ".png";
   document.getElementById(name + " text").innerHTML = get_name(method);
 }
-$(document).ready(function() {
-    $(window).scrollTop($(window).height()/2);
-    $(window).scrollLeft($(window).width()/2);
-});
+window.scrollTo({ top: 0, left: window.width()/2, behavior: 'smooth' });
 </script>
 </html>
