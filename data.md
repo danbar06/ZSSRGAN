@@ -136,7 +136,7 @@ window.scrollTo({ top: 0, left: 1150, behavior: 'smooth'});
 </html>
 
 Our method learn the down scaled kernel of an image and utilize it in order to preduce a SR image, the same task that KernelGAN are solving.
-ZSSR on the other hand, is better at solving an artificially down scaled images since it assume the kernel is the same kernel used for down scaling (Bicubic), while our method and KernelGAN are learing this kernel.
+ZSSR on the other hand together the Bicubic kernel (its most basic configuration), is better at solving an artificially down scaled images since it assume the kernel is the same kernel used for down scaling (Bicubic), while our method and KernelGAN are learing this kernel.
 In the next example, we took such an image that down scaled artificially using the Bicubic algorithm.
 <html style="width: 100%;height:100%;">
 <head>
