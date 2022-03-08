@@ -179,6 +179,9 @@ function get_name(name){
   if (name == "KERGAN"){
     return "KernelGAN";
   }
+  if (name == "GT"){
+    return "Ground Truth";
+  }
   return name;
 }
 function get_psnr(name){
