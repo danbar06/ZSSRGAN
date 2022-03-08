@@ -125,7 +125,61 @@ function get_name(name){
   if (name == "KERGAN"){
     return "KernelGAN";
   }
-  return "ZSSR";
+  return name;
+}
+function change_img(name, method) {
+  document.getElementById(name + " img").src = "../ZSSRGAN/data/" + name + "_" + method + ".png";
+  document.getElementById(name + " text").innerHTML = get_name(method);
+}
+window.scrollTo({ top: 0, left: 1150, behavior: 'smooth'});
+</script>
+</html>
+
+Our method learn the down scaled kernel of an image and utilize it in order to preduce a SR image, the same task that KernelGAN are solving.
+ZSSR on the other hand, is better at solving an artificially down scaled images since it assume the kernel is the same kernel used for down scaling, while our method and KernelGAN are learing this kernel.
+In the next example, we took such an image that down scaled artificially using the Bicubic algorithm.
+<html style="width: 100%;height:100%;">
+<head>
+<style>
+body { position:absolute; top:0; bottom:0; right:0; left:0; }
+table, th, td {
+  border: 0px solid black;
+}
+img {width:auto; height:auto;}
+</style>
+</head>
+<body style="width: 200%;">
+    <span style="font-weight: bold; font-size: 1.5em; "><u>Artificially down scaled image: Baby - SR x2 </u></span>
+    <table>
+        <tbody>
+            <tr>
+                <td>
+                  <font size="5"><u><b id="baby text">ZSSRGAN</b><br></u></font>
+                    <img src="../ZSSRGAN/data/baby_ZSSRGAN.png" id="baby img">
+                </td>
+                <td style="vertical-align:bottom">
+                    <button onclick="change_img('baby', 'ZSSR')" style="font-size: 12px;background-color:lightgreen" class="button zssr">ZSSR</button>
+                    <br>
+                    <button onclick="change_img('baby', 'ZSSRGAN')" style="font-size: 12px;background-color:lightblue" class="button zssrgan">ZSSRGAN (Ours)</button>
+                    <br>
+                    <button onclick="change_img('baby', 'KERGAN')" style="font-size: 12px;background-color:tomato" class="button kergan">KernelGAN</button>
+                    <br>
+                    <button onclick="change_img('baby', 'GT')" style="font-size: 12px;background-color:tomato" class="button gt">Ground Truth</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+  </div>
+</body>
+<script>
+function get_name(name){
+  if (name == "ZSSRGAN"){
+    return "ZSSRGAN (Ours)";
+  }
+  if (name == "KERGAN"){
+    return "KernelGAN";
+  }
+  return name;
 }
 function change_img(name, method) {
   document.getElementById(name + " img").src = "../ZSSRGAN/data/" + name + "_" + method + ".png";
