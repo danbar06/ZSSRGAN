@@ -7,6 +7,15 @@ footer {
   display: none;
 }
 
+body: {
+   text-align: center
+}
+
+#main {
+   text-align: left
+   margin: 0 auto;
+}
+
 .button {
   background-color: #e7e7e7;
   border: none;
