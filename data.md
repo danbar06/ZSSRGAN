@@ -153,13 +153,9 @@ img {width:auto; height:auto;}
     <table>
         <tbody>
             <tr>
-              <td>
-                  <font size="5"><u><b id="psnr text">(PSNR/SSIM) 28.566/0.951</b><br></u></font>
-              </td>
-            </tr>
-            <tr>
                 <td>
                   <font size="5"><u><b id="baby text">ZSSRGAN</b><br></u></font>
+                  <font size="5"><u><b id="psnr text">(PSNR/SSIM) 28.566/0.951</b><br></u></font>
                     <img src="../ZSSRGAN/data/baby_ZSSRGAN.png" id="baby img">
                 </td>
                 <td style="vertical-align:bottom">
