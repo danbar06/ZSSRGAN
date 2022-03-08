@@ -186,13 +186,13 @@ function get_name(name){
 }
 function get_psnr(name){
   if (name == "ZSSRGAN"){
-    return "28.566/0.951";
+    return "31.051/0.968";
   }
   if (name == "KERGAN"){
-    return "25.513/0.925";
+    return "25.25/0.922";
   }
   if (name == "ZSSR"){
-    return "37.899/0.997";
+    return "38.015/0.997";
   }
   return "∞/1";
 }
