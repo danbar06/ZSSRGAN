@@ -131,6 +131,6 @@ function change_img(name, method) {
   document.getElementById(name + " img").src = "../ZSSRGAN/data/" + name + "_" + method + ".png";
   document.getElementById(name + " text").innerHTML = get_name(method);
 }
-window.scrollTo({ top: 0, left: 950, behavior: 'smooth'});
+window.scrollTo({ top: 0, left: 1150, behavior: 'smooth'});
 </script>
 </html>
