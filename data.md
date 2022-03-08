@@ -5,7 +5,7 @@ body { position:absolute; top:0; bottom:0; right:0; left:0; }
 table, th, td {
   border: 0px solid black;
 }
-img {max-width:100%;}
+img {width:auto; height:auto;}
 </style>
 </head>
 <body style="width: 200%;">
