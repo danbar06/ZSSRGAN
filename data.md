@@ -1,17 +1,4 @@
 <html>
-#dimScreen
-{
-    position:fixed;
-    padding:0;
-    margin:0;
-
-    top:0;
-    left:0;
-
-    width: 100%;
-    height: 100%;
-    background:rgba(255,255,255,0.5);
-}
 <head>
 <style>
 table, th, td {
@@ -19,7 +6,7 @@ table, th, td {
 }
 </style>
 </head>
-<body>
+<body style="horizontal-align:left">
 
 <span style="font-weight: bold; font-size: 1.5em; "><u>Historic image: Abraham Lincoln photograph - SR x2 </u></span>
 <table>
