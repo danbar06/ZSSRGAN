@@ -136,7 +136,7 @@ window.scrollTo({ top: 0, left: 1150, behavior: 'smooth'});
 </html>
 
 Our method learn the down scaled kernel of an image and utilize it in order to preduce a SR image, the same task that KernelGAN are solving.
-ZSSR on the other hand, is better at solving an artificially down scaled images since it assume the kernel is the same kernel used for down scaling, while our method and KernelGAN are learing this kernel.
+ZSSR on the other hand, is better at solving an artificially down scaled images since it assume the kernel is the same kernel used for down scaling (Bicubic), while our method and KernelGAN are learing this kernel.
 In the next example, we took such an image that down scaled artificially using the Bicubic algorithm.
 <html style="width: 100%;height:100%;">
 <head>
@@ -167,9 +167,13 @@ img {width:auto; height:auto;}
                     <button onclick="change_img('baby', 'GT')" style="font-size: 12px;background-color:tomato" class="button gt">Ground Truth</button>
                 </td>
             </tr>
+            <tr>
+              <td>
+                  <font size="5"><u><b id="psnr text">(PSNR/SSIM) 28.566/0.951</b><br></u></font>
+              </td>
+            </tr>
         </tbody>
     </table>
-  </div>
 </body>
 <script>
 function get_name(name){
@@ -181,10 +185,24 @@ function get_name(name){
   }
   return name;
 }
+function get_psnr(name){
+  if (name == "ZSSRGAN"){
+    return "28.566/0.951";
+  }
+  if (name == "KERGAN"){
+    return "25.513/0.925";
+  }
+  if (name == "ZSSR"){
+    return "37.899/0.997";
+  }
+  return "∞/1";
+}
 function change_img(name, method) {
   document.getElementById(name + " img").src = "../ZSSRGAN/data/" + name + "_" + method + ".png";
   document.getElementById(name + " text").innerHTML = get_name(method);
+  if (name == 'baby'){
+    document.getElementById('psnt text').innerHTML = "(PSNR/SSIM) " + get_psnr(method);
+  }
 }
-window.scrollTo({ top: 0, left: 1150, behavior: 'smooth'});
 </script>
 </html>
