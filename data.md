@@ -165,7 +165,7 @@ img {width:auto; height:auto;}
                     <br>
                     <button onclick="change_img('baby', 'KERGAN')" style="font-size: 12px;background-color:tomato" class="button kergan">KernelGAN</button>
                     <br>
-                    <button onclick="change_img('baby', 'GT')" style="font-size: 12px;background-color:tomato" class="button gt">Ground Truth</button>
+                    <button onclick="change_img('baby', 'GT')" style="font-size: 12px;background-color:Lime" class="button gt">Ground Truth</button>
                 </td>
             </tr>
         </tbody>
