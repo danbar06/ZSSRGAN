@@ -9,7 +9,7 @@ img {width:auto; height:auto;}
 </style>
 </head>
 <body>
-<embed src="../ZSSRGAN/data/DL4CV___Final_Report.pdf" width="800px" height="2100px" />
+<embed src="../ZSSRGAN/data/Final_Report.pdf" width="800px" height="2100px" />
 </body>
 <script>
 </script>
