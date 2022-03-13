@@ -9,8 +9,8 @@ img {width:auto; height:auto;}
 </style>
 </head>
 <body>
-  <video controls>
-    <source src="../ZSSRGAN/data/ZSSRGAN_Presentation.mp4" width="640" height="480" type="video/mp4">
+  <video width="960" controls>
+    <source src="../ZSSRGAN/data/ZSSRGAN_Presentation.mp4" type="video/mp4">
     Your browser does not support the video tag.
   </video>
 </body>
