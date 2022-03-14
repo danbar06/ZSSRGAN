@@ -2,10 +2,15 @@
 ### Dan Bar, Neta Shaul, Yeari Vigder
 
 <br/>
+<center>
+  [<a href="https://danbar06.github.io/ZSSRGAN/report">Paper PDF</a>]
+	[<a href="https://github.com/danbar06/ZSSRGAN/tree/master">Code</a>]
+	[<a href="https://danbar06.github.io/ZSSRGAN/presentation">Presentation</a>]<br>
+</center>
 <br/>
-
 ## Abstract
 The project considers the problem of 'Super Resolution' (SR).
+
 It offers an image-specific CNN solution that is based on [ZSSR](https://www.wisdom.weizmann.ac.il/~vision/zssr/) but combines more work that has been done, see  [KernelGAN](https://www.wisdom.weizmann.ac.il/~vision/kernelgan/), [SinGAN](https://github.com/tamarott/SinGAN).
 In KernelGAN only the generator of the network was used as a downscale kernel to improve the ZSSR result.
 However, in SinGAN, it was shown that adversarial training could be used to give state of the art (SOTA) results for SR,
