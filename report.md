@@ -9,7 +9,7 @@ img {width:auto; height:auto;}
 </style>
 </head>
 <body>
-<embed src="../ZSSRGAN/data/Final_Report.pdf" width="800px" height="2100px" />
+<iframe src="../ZSSRGAN/data/Final_Report.pdf" width="100%" height="1400px" />
 </body>
 <script>
 </script>
